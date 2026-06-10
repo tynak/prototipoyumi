@@ -1,0 +1,240 @@
+<div class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Protótipo da tela Novo contrato, etapa Rateio, replicando o design system atual e adicionando input de porcentagem por comissionado com toggle R$ / % e validação da soma em 100%.</div>
+
+<style>
+#nc *{box-sizing:border-box}
+#nc .lbl{font-size:11px;color:#9096A1;margin:0 0 3px;letter-spacing:.2px}
+#nc .vinput{border:none;background:transparent;width:100%;padding:0;font-size:16px;color:#1F2937;font-family:var(--font-sans);outline:none;height:auto}
+#nc .vcell{border:1.5px solid transparent;border-radius:6px;background:#F6F7F9;transition:border-color .12s,background .12s}
+#nc .vcell.focus{border-color:#2D6FE0;background:#fff}
+#nc .vcell.err{border-color:#D64545;background:#fff}
+#nc .lnk{border:none;background:transparent;color:#2D6FE0;font-size:12px;font-weight:500;letter-spacing:.4px;cursor:pointer;padding:0}
+#nc .lnk:hover{text-decoration:underline}
+#nc .seg{border:none;background:transparent;padding:5px 14px;border-radius:6px;font-size:12px;font-weight:500;letter-spacing:.3px;cursor:pointer;color:#6B7280}
+#nc .seg.on{background:#2D6FE0;color:#fff}
+#nc .chip{display:inline-flex;align-items:center;gap:6px;background:#E7EEF9;color:#2D5BA8;font-size:13px;padding:3px 8px;border-radius:5px}
+#nc .chip i{cursor:pointer;color:#7A93C2;font-size:14px}
+</style>
+
+<div id="nc" style="position:relative;background:#fff;border:0.5px solid #E3E6EB;border-radius:12px;padding:22px 26px 0;max-width:620px;font-family:var(--font-sans)">
+
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <h1 style="margin:0;font-size:22px;font-weight:500;color:#161616">Novo contrato</h1>
+    <i class="ti ti-x" style="font-size:20px;color:#6B7280;cursor:pointer" aria-label="Fechar"></i>
+  </div>
+
+  <div style="position:relative;margin:20px 0 6px">
+    <div style="position:absolute;top:14px;left:12.5%;right:12.5%;height:2px;background:#D9DCE2"></div>
+    <div style="position:absolute;top:14px;left:12.5%;width:50%;height:2px;background:#2D6FE0"></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);position:relative">
+      <div style="text-align:center"><div style="width:28px;height:28px;border-radius:50%;background:#2D6FE0;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px"><i class="ti ti-check"></i></div><div style="font-size:11px;font-weight:500;letter-spacing:.5px;color:#374151;margin-top:7px">IDENTIFICAÇÃO</div></div>
+      <div style="text-align:center"><div style="width:28px;height:28px;border-radius:50%;background:#2D6FE0;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px"><i class="ti ti-check"></i></div><div style="font-size:11px;font-weight:500;letter-spacing:.5px;color:#374151;margin-top:7px">CONDIÇÕES</div></div>
+      <div style="text-align:center"><div style="width:28px;height:28px;border-radius:50%;background:#2D6FE0;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:500">3</div><div style="font-size:11px;font-weight:500;letter-spacing:.5px;color:#161616;margin-top:7px">RATEIO</div></div>
+      <div style="text-align:center"><div style="width:28px;height:28px;border-radius:50%;background:#B9BEC7;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:500">4</div><div style="font-size:11px;font-weight:500;letter-spacing:.5px;color:#9096A1;margin-top:7px">REVISÃO</div></div>
+    </div>
+  </div>
+
+  <div style="border-top:0.5px solid #EAECEF;margin:14px -26px 0"></div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px">
+    <p style="margin:0;font-size:13px;font-weight:500;letter-spacing:.5px;color:#2A2A2A">RATEIO DO PAGAMENTO</p>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div role="group" aria-label="Modo de entrada" style="display:inline-flex;background:#F1F2F4;border-radius:8px;padding:2px">
+        <button id="m-brl" type="button" class="seg on">R$</button>
+        <button id="m-pct" type="button" class="seg">%</button>
+      </div>
+      <i class="ti ti-chevron-up" style="font-size:18px;color:#9096A1" aria-hidden="true"></i>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;margin-top:8px">
+    <button id="dist-eq" type="button" class="lnk"><i class="ti ti-arrows-split-2" style="vertical-align:-2px;margin-right:4px"></i>DISTRIBUIR IGUALMENTE</button>
+  </div>
+
+  <div id="rows" style="margin-top:6px"></div>
+
+  <button id="add-row" type="button" style="width:100%;margin-top:14px;border:1px solid #C9D6EE;background:#fff;color:#2D6FE0;font-size:13px;font-weight:500;letter-spacing:.5px;padding:12px;border-radius:8px;cursor:pointer">ADICIONAR COMISSIONADO</button>
+
+  <div id="infobox" style="display:flex;align-items:flex-start;gap:12px;margin-top:16px;background:#E9F1FC;border-radius:8px;padding:14px 16px">
+    <div id="info-ic" style="width:26px;height:26px;border-radius:50%;background:#1E2630;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0"><i class="ti ti-currency-dollar"></i></div>
+    <div style="flex:1">
+      <p id="info-title" style="margin:0;font-size:13px;font-weight:500;color:#1F2937"></p>
+      <p id="info-sub" style="margin:2px 0 0;font-size:14px;color:#374151"></p>
+    </div>
+  </div>
+
+  <p id="err-line" style="display:none;margin:10px 2px 0;font-size:13px;color:#D64545"><i class="ti ti-alert-circle" style="vertical-align:-2px;margin-right:4px"></i>A soma dos percentuais deve ser exatamente 100%.</p>
+
+  <label id="same-wrap" style="display:none;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:#4B5563;cursor:pointer">
+    <input type="checkbox" id="same-all" checked style="width:auto;height:auto;margin:0;accent-color:#2D6FE0" />
+    Usar a mesma divisão percentual em todas as parcelas
+  </label>
+
+  <div style="border-top:0.5px solid #EAECEF;margin:20px -26px 0"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0">
+    <button type="button" class="lnk" style="font-size:13px"><i class="ti ti-chevron-left" style="vertical-align:-2px"></i> VOLTAR</button>
+    <button id="next-btn" type="button" style="display:inline-flex;align-items:center;gap:6px;background:#2D6FE0;color:#fff;border:none;font-size:13px;font-weight:500;letter-spacing:.5px;padding:11px 22px;border-radius:8px;cursor:pointer">SEGUIR <i class="ti ti-chevron-right"></i></button>
+  </div>
+
+  <div id="modal-ov" style="display:none;position:absolute;inset:0;background:rgba(20,28,40,0.5);border-radius:12px;align-items:center;justify-content:center;padding:1rem;z-index:20">
+    <div style="background:#fff;border-radius:10px;padding:20px 22px 16px;max-width:360px;width:100%">
+      <p style="margin:0 0 6px;font-size:15px;font-weight:500;color:#161616"><i class="ti ti-refresh" style="vertical-align:-2px;margin-right:6px;color:#B98900"></i>Trocar modo de entrada</p>
+      <p style="margin:0 0 18px;font-size:13px;color:#4B5563;line-height:1.6">Trocar o modo irá limpar os valores preenchidos. Deseja continuar?</p>
+      <div style="display:flex;justify-content:flex-end;gap:10px">
+        <button id="modal-cancel" type="button" style="border:1px solid #D6DAE0;background:#fff;color:#374151;font-size:13px;font-weight:500;padding:9px 16px;border-radius:8px;cursor:pointer">CANCELAR</button>
+        <button id="modal-ok" type="button" style="border:none;background:#2D6FE0;color:#fff;font-size:13px;font-weight:500;padding:9px 16px;border-radius:8px;cursor:pointer">CONTINUAR</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var TOTAL=1000;
+  var mode='brl', pendingMode=null;
+  var people=[
+    {id:1,name:'Thais Yumi',val:'500,00'},
+    {id:2,name:'Artur Lovo Estadeu Júnior',val:'350,00'},
+    {id:3,name:'Thiago H Oliveira',val:'150,00'}
+  ];
+  var seq=4;
+  var rowsEl=document.getElementById('rows');
+  var mBrl=document.getElementById('m-brl'), mPct=document.getElementById('m-pct');
+  var nextBtn=document.getElementById('next-btn');
+  var errLine=document.getElementById('err-line');
+  var sameWrap=document.getElementById('same-wrap');
+
+  function fmtP(n){return (Math.round(n*100)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function fmtB(n){return n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function parse(s){if(s===''||s==null)return null;var v=parseFloat(String(s).replace(/\./g,'').replace(',','.'));return isNaN(v)?null:v;}
+  function pctToBrl(p){return TOTAL*p/100;}
+  function rowPct(p){var v=parse(p.val);if(v==null)return 0;return mode==='pct'?v:(v/TOTAL*100);}
+  function sumPct(){return people.reduce(function(a,p){return a+rowPct(p);},0);}
+  function sumBrl(){return people.reduce(function(a,p){var v=parse(p.val);return a+(mode==='brl'?(v||0):pctToBrl(v||0));},0);}
+  function inits(n){return n.split(' ').filter(Boolean).slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();}
+
+  function render(){
+    rowsEl.innerHTML='';
+    people.forEach(function(p,idx){
+      var v=parse(p.val);
+      var over=(mode==='pct'&&v!=null&&v>100);
+      var block=document.createElement('div');
+      block.style.cssText='margin-top:'+(idx===0?'10px':'18px');
+
+      var head=document.createElement('p');
+      head.textContent='Comissionado #'+(idx+1);
+      head.style.cssText='margin:0 0 6px;font-size:14px;font-weight:500;color:#1F1F1F';
+      block.appendChild(head);
+
+      var row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:flex-start;gap:16px';
+
+      var grp=document.createElement('div');
+      grp.style.cssText='flex:1;display:flex;border:1px solid #E3E6EB;border-radius:8px;overflow:hidden;background:#F6F7F9';
+
+      var selCell=document.createElement('div');
+      selCell.style.cssText='flex:1;padding:8px 12px;border-right:1px solid #E3E6EB';
+      selCell.innerHTML='<p class="lbl">Selecionar Comissionado</p><span class="chip">'+p.name+' <i class="ti ti-circle-x" data-rm="'+p.id+'"></i></span>';
+
+      var valCell=document.createElement('div');
+      valCell.className='vcell'+(over?' err':'');
+      valCell.style.cssText='width:170px;padding:8px 12px';
+      var lbl=document.createElement('p'); lbl.className='lbl'; lbl.textContent=mode==='brl'?'Valor':'Percentual';
+      var ir=document.createElement('div'); ir.style.cssText='display:flex;align-items:baseline;gap:4px';
+      if(mode==='brl'){var pf=document.createElement('span');pf.textContent='R$';pf.style.cssText='font-size:14px;color:#6B7280';ir.appendChild(pf);}
+      var inp=document.createElement('input'); inp.type='text'; inp.inputMode='decimal'; inp.className='vinput'; inp.value=p.val; inp.placeholder='0,00'; inp.setAttribute('aria-label','Valor para '+p.name);
+      ir.appendChild(inp);
+      if(mode==='pct'){var sf=document.createElement('span');sf.textContent='%';sf.style.cssText='font-size:14px;color:#6B7280';ir.appendChild(sf);}
+      valCell.appendChild(lbl); valCell.appendChild(ir);
+
+      grp.appendChild(selCell); grp.appendChild(valCell);
+
+      var rm=document.createElement('button');
+      rm.type='button'; rm.textContent='REMOVER'; rm.className='lnk';
+      rm.style.marginTop='22px';
+      rm.addEventListener('click',function(){people=people.filter(function(x){return x.id!==p.id;});render();update();});
+
+      row.appendChild(grp); row.appendChild(rm);
+      block.appendChild(row);
+
+      var capRow=document.createElement('div');
+      capRow.style.cssText='display:flex;margin-top:5px';
+      var capTxt=(mode==='brl')
+        ? (v!=null?Math.round(rowPct(p))+'% do total':'0% do total')
+        : (v!=null?'R$ '+fmtB(pctToBrl(v)):'R$ 0,00');
+      capRow.innerHTML='<div style="flex:1"></div><div style="width:170px;padding-left:12px"><span class="cap" style="font-size:12px;color:'+(over?'#D64545':'#9096A1')+'">'+(over?'Acima de 100%':capTxt)+'</span></div><div style="width:74px"></div>';
+      block.appendChild(capRow);
+
+      inp.addEventListener('focus',function(){if(!valCell.classList.contains('err'))valCell.classList.add('focus');});
+      inp.addEventListener('blur',function(){valCell.classList.remove('focus');var nv=parse(inp.value);if(nv!=null){inp.value=fmtP(nv);if(mode==='brl')inp.value=fmtB(nv);else inp.value=fmtP(nv);p.val=inp.value;}update();render2caption(block,p);});
+      inp.addEventListener('input',function(){p.val=inp.value;var nv=parse(p.val);var ov=(mode==='pct'&&nv!=null&&nv>100);valCell.classList.toggle('err',ov);if(ov)valCell.classList.remove('focus');else if(document.activeElement===inp)valCell.classList.add('focus');render2caption(block,p);update();});
+
+      rowsEl.appendChild(block);
+    });
+    rowsEl.querySelectorAll('[data-rm]').forEach(function(x){x.addEventListener('click',function(){var id=+x.getAttribute('data-rm');people=people.filter(function(p){return p.id!==id;});render();update();});});
+  }
+
+  function render2caption(block,p){
+    var v=parse(p.val);var over=(mode==='pct'&&v!=null&&v>100);
+    var cap=block.querySelector('.cap');if(!cap)return;
+    var t=(mode==='brl')?((v!=null?Math.round(rowPct(p)):0)+'% do total'):(v!=null?'R$ '+fmtB(pctToBrl(v)):'R$ 0,00');
+    cap.textContent=over?'Acima de 100%':t;
+    cap.style.color=over?'#D64545':'#9096A1';
+  }
+
+  function update(){
+    var s=sumPct(), sr=Math.round(s*100)/100;
+    var brl=sumBrl();
+    var anyOver=people.some(function(p){var v=parse(p.val);return mode==='pct'&&v!=null&&v>100;});
+    var exact, title, sub, boxBg, icBg, icCls;
+    var ic=document.getElementById('info-ic'), box=document.getElementById('infobox');
+    var infoT=document.getElementById('info-title'), infoS=document.getElementById('info-sub');
+
+    if(mode==='brl'){
+      var rest=TOTAL-brl;
+      exact=Math.abs(rest)<0.005;
+      title='Valor restante a ser dividido entre os comissionados:';
+      sub='R$ '+fmtB(Math.max(0,rest));
+      boxBg= rest<-0.005?'#FBEAEA':'#E9F1FC'; icBg= rest<-0.005?'#D64545':'#1E2630'; icCls='ti-currency-dollar';
+      errLine.style.display='none';
+    } else {
+      exact=(Math.abs(sr-100)<0.001)&&!anyOver;
+      title='Total distribuído: '+fmtP(sr)+'%';
+      if(exact){sub='Rateio completo (100%)';}
+      else if(s>100||anyOver){sub='Excede em '+fmtP(Math.abs(sr-100))+'% — ajuste para 100%';}
+      else {sub='Faltam '+fmtP(100-sr)+'% para fechar 100%';}
+      boxBg= exact?'#E7F4EC':((s>100||anyOver)?'#FBEAEA':'#E9F1FC');
+      icBg= exact?'#1B7A43':((s>100||anyOver)?'#D64545':'#1E2630');
+      icCls= exact?'ti-check':((s>100||anyOver)?'ti-alert-triangle':'ti-percentage');
+      errLine.style.display=(s>100||anyOver)?'block':'none';
+    }
+    box.style.background=boxBg; ic.style.background=icBg; ic.innerHTML='<i class="ti '+icCls+'"></i>';
+    infoT.textContent=title; infoS.textContent=sub;
+
+    nextBtn.disabled=!exact;
+    nextBtn.style.opacity=exact?'1':'.45';
+    nextBtn.style.cursor=exact?'pointer':'not-allowed';
+  }
+
+  document.getElementById('dist-eq').addEventListener('click',function(){
+    var n=people.length;if(!n)return;
+    if(mode==='pct'){var base=Math.floor(10000/n)/100,acc=0;people.forEach(function(p,i){if(i<n-1){p.val=fmtP(base);acc+=base;}else{p.val=fmtP(Math.round((100-acc)*100)/100);}});}
+    else{var b=Math.floor(TOTAL/n*100)/100,a=0;people.forEach(function(p,i){if(i<n-1){p.val=fmtB(b);a+=b;}else{p.val=fmtB(Math.round((TOTAL-a)*100)/100);}});}
+    render();update();
+  });
+
+  document.getElementById('add-row').addEventListener('click',function(){people.push({id:seq++,name:'Novo comissionado',val:''});render();update();});
+
+  var ov=document.getElementById('modal-ov');
+  function requestMode(t){if(t===mode)return;var has=people.some(function(p){return p.val!=='';});if(has){pendingMode=t;ov.style.display='flex';}else applyMode(t);}
+  function applyMode(t){mode=t;people.forEach(function(p){p.val='';});mBrl.classList.toggle('on',mode==='brl');mPct.classList.toggle('on',mode==='pct');sameWrap.style.display=mode==='pct'?'flex':'none';render();update();}
+  mBrl.addEventListener('click',function(){requestMode('brl');});
+  mPct.addEventListener('click',function(){requestMode('pct');});
+  document.getElementById('modal-cancel').addEventListener('click',function(){ov.style.display='none';pendingMode=null;});
+  document.getElementById('modal-ok').addEventListener('click',function(){ov.style.display='none';if(pendingMode){applyMode(pendingMode);pendingMode=null;}});
+
+  nextBtn.addEventListener('click',function(){if(!nextBtn.disabled)sendPrompt('Avançar para a etapa Revisão com o rateio definido');});
+
+  render();update();
+})();
+</script>
