@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modais de cobrança avulsa · Portal do comissionado</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<style>
+  :root{
+    --blue:#2D6FE0; --blue-d:#2D5BA8; --blue-bg:#E9F1FC;
+    --ink:#161616; --txt:#1F2937; --muted:#6B7280; --hint:#9096A1;
+    --line:#EAECEF; --border:#E3E6EB; --surface:#F6F7F9;
+    --amber-bg:#FAEEDA; --amber-tx:#854F0B;
+    --red:#D64545; --red-bg:#FCEBEB;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#EEF0F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:var(--txt);}
+  .page{max-width:840px;margin:0 auto;padding:32px 20px 64px;}
+  .page > header{margin-bottom:8px;}
+  .page > header h1{font-size:22px;font-weight:500;color:var(--ink);margin:0 0 4px;}
+  .page > header p{font-size:14px;color:var(--muted);margin:0;}
+  .grid{display:flex;flex-wrap:wrap;gap:24px;margin-top:28px;}
+  .col{flex:1;min-width:320px;}
+  .tag{display:inline-block;font-size:12px;font-weight:500;padding:4px 12px;border-radius:8px;letter-spacing:.2px;margin-bottom:12px;}
+  .tag.amber{background:var(--amber-bg);color:var(--amber-tx);}
+  .tag.red{background:var(--red-bg);color:#A32D2D;}
+  .modal{background:#fff;border:0.5px solid var(--border);border-radius:12px;padding:22px;box-shadow:0 8px 30px rgba(20,28,40,.08);}
+  .mhead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+  .mhead h2{font-size:18px;font-weight:500;color:var(--ink);margin:0;}
+  .mhead p{font-size:13px;color:var(--muted);margin:3px 0 0;}
+  .mhead i{font-size:19px;color:var(--muted);cursor:pointer;}
+  .sect{font-size:12px;font-weight:500;letter-spacing:.4px;color:#2A2A2A;text-transform:uppercase;margin:0 0 8px;}
+  .ref{border:0.5px solid var(--border);border-radius:8px;padding:11px 13px;display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+  .swatch{width:13px;height:13px;border-radius:3px;flex:none;}
+  .ref .nm{font-size:13px;font-weight:500;color:var(--ink);margin:0;}
+  .ref .sub{font-size:12px;color:var(--muted);margin:2px 0 0;}
+  .ref .val{font-size:13px;font-weight:500;margin-left:auto;}
+  .opts{display:flex;gap:20px;margin-bottom:16px;font-size:14px;color:var(--txt);}
+  .opt{display:flex;align-items:center;gap:7px;}
+  .opt i{font-size:17px;}
+  .on{color:var(--blue);}
+  .off{color:var(--hint);}
+  .duedate{border:1px solid var(--border);border-radius:8px;padding:6px 11px;}
+  .duedate .l{font-size:11px;color:var(--hint);margin:0;}
+  .duedate .d{font-size:13px;margin:2px 0 0;color:var(--txt);}
+  .pay-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+  .summary{border-top:0.5px solid var(--line);padding-top:14px;font-size:13px;}
+  .line{display:flex;justify-content:space-between;margin-bottom:7px;}
+  .line .k{color:var(--muted);}
+  .line.total{font-weight:500;padding-top:8px;border-top:0.5px solid var(--line);}
+  .check{display:flex;align-items:flex-start;gap:9px;font-size:13px;margin-bottom:4px;}
+  .check i{font-size:17px;}
+  .check.disabled{opacity:.5;}
+  .note-disc{font-size:11px;color:var(--muted);margin:0 0 12px 26px;}
+  .note-disc.italic{color:var(--hint);font-style:italic;}
+  .field-lbl{font-size:13px;font-weight:500;margin:16px 0 6px;}
+  .req{color:var(--red);}
+  .notes{border:0.5px solid var(--red);border-radius:8px;padding:11px 13px;min-height:46px;font-size:13px;color:var(--hint);}
+  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;}
+  .btn-link{font-size:13px;color:var(--blue);cursor:pointer;}
+  .btns{display:flex;gap:8px;}
+  .btn{font-size:13px;font-weight:500;padding:9px 14px;border-radius:8px;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--txt);}
+  .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>Modais de geração de cobrança avulsa · Portal do comissionado</h1>
+    <p>Dois estados conforme o status da parcela: pendente (Regular) e vencida (Atrasada)</p>
+  </header>
+
+  <div class="grid">
+
+    <div class="col">
+      <span class="tag amber">Parcela pendente (Regular)</span>
+      <div class="modal">
+        <div class="mhead">
+          <div><h2>Gerar cobrança avulsa</h2><p>Empreendimento teste · Portal do comissionado</p></div>
+          <i class="ti ti-x"></i>
+        </div>
+        <p class="sect">Parcelas de referência (1)</p>
+        <div class="ref">
+          <span class="swatch" style="background:#888780;"></span>
+          <div><p class="nm">Parcela 3 <span style="color:var(--hint);font-weight:400;">(id:3)</span></p><p class="sub">Vence em 28/06/2026 · Contrato 741</p></div>
+          <span class="val">R$ 3,34</span>
+        </div>
+        <p class="sect">Tipo de cobrança</p>
+        <div class="opts"><span class="opt"><i class="ti ti-circle-check-filled on"></i>Regular</span></div>
+        <p class="sect">Método de pagamento</p>
+        <div class="opts">
+          <span class="opt"><i class="ti ti-circle-check-filled on"></i>Boleto</span>
+          <span class="opt"><i class="ti ti-circle off"></i>PIX</span>
+        </div>
+        <div class="summary">
+          <div class="line"><span class="k">Valor inicial da cobrança</span><span>R$ 3,34</span></div>
+          <div class="line"><span class="k">Vencimento</span><span>28/06/2026 <span style="color:var(--hint);">(mantido)</span></span></div>
+          <div class="line"><span class="k">Total de descontos</span><span>—</span></div>
+          <div class="line total"><span>Valor da cobrança</span><span>R$ 3,34</span></div>
+        </div>
+        <p class="note-disc italic" style="margin-left:0;margin-top:10px;">Desconto de incentivo não disponível no portal do comissionado.</p>
+        <p class="field-lbl">Notas para geração da cobrança <span class="req">*</span></p>
+        <div class="notes">Obrigatório · máximo 1000 caracteres</div>
+        <div class="foot">
+          <span class="btn-link">Cancelar</span>
+          <div class="btns"><button class="btn">Copiar resumo</button><button class="btn primary">Gerar</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <span class="tag red">Parcela vencida (Atrasada)</span>
+      <div class="modal">
+        <div class="mhead">
+          <div><h2>Gerar cobrança avulsa</h2><p>Teste Custódia · Portal do comissionado</p></div>
+          <i class="ti ti-x"></i>
+        </div>
+        <p class="sect">Parcelas de referência (1)</p>
+        <div class="ref">
+          <span class="swatch" style="background:#EF9F27;"></span>
+          <div><p class="nm">Parcela 2 <span style="color:var(--hint);font-weight:400;">(id:2)</span></p><p class="sub">Venceu em 29/05/2026 · Contrato 1</p></div>
+          <span class="val">R$ 5,12</span>
+        </div>
+        <p class="sect">Tipo de cobrança</p>
+        <div class="opts"><span class="opt"><i class="ti ti-circle-check-filled on"></i>Atrasada</span></div>
+        <p class="sect">Método de pagamento</p>
+        <div class="pay-row">
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <span class="opt"><i class="ti ti-circle-check-filled on"></i>Boleto</span>
+            <span class="opt"><i class="ti ti-circle off"></i>PIX</span>
+          </div>
+          <div class="duedate"><p class="l">Novo vencimento</p><p class="d">10/06/2026 <i class="ti ti-calendar"></i></p></div>
+        </div>
+        <div class="summary">
+          <div class="line"><span class="k">Valor inicial da cobrança</span><span>R$ 5,00</span></div>
+          <div class="line" style="margin-bottom:11px;"><span class="k">Acréscimos (juros/multa)</span><span>R$ 0,12</span></div>
+          <div class="check"><i class="ti ti-square-check-filled on"></i><span>Desconto de juros/multa (atraso)</span></div>
+          <p class="note-disc">Abate só a parte do beneficiary agent manager / comissionado. Branch e split manager company mantêm o valor integral.</p>
+          <div class="check disabled"><i class="ti ti-square"></i><span>Desconto de incentivo</span></div>
+          <p class="note-disc italic">Indisponível no portal do comissionado.</p>
+          <div class="line"><span class="k">Total de descontos</span><span>− R$ 0,12</span></div>
+          <div class="line total"><span>Valor da cobrança</span><span>R$ 5,00</span></div>
+          <div class="line" style="margin-top:5px;"><span class="k">Vence em</span><span>10/06/2026 (hoje)</span></div>
+        </div>
+        <p class="field-lbl">Notas para geração da cobrança <span class="req">*</span></p>
+        <div class="notes">Obrigatório · máximo 1000 caracteres</div>
+        <div class="foot">
+          <span class="btn-link">Cancelar</span>
+          <div class="btns"><button class="btn">Copiar resumo</button><button class="btn primary">Gerar</button></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
