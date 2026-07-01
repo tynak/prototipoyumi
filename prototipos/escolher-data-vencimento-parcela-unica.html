@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renegociar parcela — Data de vencimento (CNT-3010)</title>
+<style>
+  :root{
+    --bg:#f4f5f7; --card:#ffffff; --ink:#0f172a; --muted:#64748b;
+    --line:#e2e8f0; --primary:#0ea5a4; --primary-ink:#0b7f7e;
+    --new:#7c3aed; --new-bg:#f5f0ff; --new-line:#c4b5fd;
+    --soft:#f8fafc;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5; padding:32px 16px;
+  }
+  .wrap{max-width:760px; margin:0 auto}
+  .doc-note{
+    font-size:12px; color:var(--muted); text-align:center; margin:0 0 20px;
+  }
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    box-shadow:0 10px 30px rgba(15,23,42,.06); overflow:hidden;
+  }
+  .head{padding:24px 28px 18px; border-bottom:1px solid var(--line)}
+  .head h1{font-size:20px; margin:0 0 4px}
+  .head p{margin:0; color:var(--muted); font-size:14px}
+
+  /* stepper */
+  .steps{display:flex; gap:8px; padding:18px 28px; border-bottom:1px solid var(--line); flex-wrap:wrap}
+  .step{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted)}
+  .step .dot{
+    width:24px; height:24px; border-radius:50%; display:grid; place-items:center;
+    background:var(--line); color:var(--muted); font-size:12px; font-weight:600;
+  }
+  .step.done .dot{background:var(--primary); color:#fff}
+  .step.active{color:var(--ink); font-weight:600}
+  .step.active .dot{background:var(--ink); color:#fff}
+  .step .bar{width:26px; height:2px; background:var(--line); border-radius:2px}
+
+  .body{padding:24px 28px}
+  .summary{
+    display:flex; justify-content:space-between; align-items:center;
+    background:var(--soft); border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; margin-bottom:22px;
+  }
+  .summary .lbl{font-size:13px; color:var(--muted)}
+  .summary .val{font-size:18px; font-weight:700}
+
+  .field{margin-bottom:20px}
+  .field > label{display:block; font-size:13px; font-weight:600; margin-bottom:8px}
+
+  .qty{display:inline-flex; align-items:center; border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  .qty button{
+    width:40px; height:40px; border:0; background:var(--soft); font-size:18px; cursor:pointer; color:var(--ink);
+  }
+  .qty button:hover{background:#eef2f6}
+  .qty input{width:56px; height:40px; border:0; text-align:center; font-size:16px; font-weight:600; background:#fff}
+  .qty input:focus{outline:none}
+
+  .parcelas{display:flex; flex-direction:column; gap:12px}
+  .parcela{
+    border:1px solid var(--line); border-radius:12px; padding:14px 16px;
+    display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;
+  }
+  .parcela .pnum{font-size:13px; color:var(--muted)}
+  .parcela .pval{font-weight:600}
+  .date-wrap{display:flex; flex-direction:column; gap:6px; min-width:180px}
+  .date-wrap small{font-size:11px; color:var(--muted)}
+  input[type=date]{
+    height:40px; border:1px solid var(--line); border-radius:10px; padding:0 12px; font-size:14px;
+    font-family:inherit; color:var(--ink);
+  }
+  input[type=date]:focus{outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(14,165,164,.15)}
+
+  /* destaque do campo novo (parcela única) */
+  .parcela.unica{background:var(--new-bg); border-color:var(--new-line)}
+  .parcela.unica input[type=date]{border-color:var(--new-line)}
+  .badge-new{
+    display:inline-flex; align-items:center; gap:6px; background:var(--new); color:#fff;
+    font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; letter-spacing:.02em;
+  }
+  .hint{font-size:12px; color:var(--new); margin-top:10px; display:flex; gap:6px; align-items:flex-start}
+
+  .foot{
+    display:flex; justify-content:space-between; gap:12px; padding:18px 28px;
+    border-top:1px solid var(--line); background:var(--soft);
+  }
+  .btn{height:42px; padding:0 20px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; border:1px solid var(--line); background:#fff; color:var(--ink)}
+  .btn.primary{background:var(--primary); border-color:var(--primary); color:#fff}
+  .btn.primary:hover{background:var(--primary-ink)}
+  .legend{margin-top:18px; font-size:12px; color:var(--muted); text-align:center}
+  .legend b{color:var(--new)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="doc-note">Protótipo para refinamento · CNT-3010 — Escolher data de vencimento para renegociação de parcela única · Squad Pagadoria</p>
+
+    <div class="card">
+      <div class="head">
+        <h1>Renegociar parcela</h1>
+        <p>Cliente: Maria Oliveira · Contrato #48213 · Empreendimento Jardim das Acácias</p>
+      </div>
+
+      <div class="steps">
+        <div class="step done"><span class="dot">✓</span> Dados</div>
+        <span class="bar"></span>
+        <div class="step active"><span class="dot">2</span> Parcelas</div>
+        <span class="bar"></span>
+        <div class="step"><span class="dot">3</span> Rateio</div>
+        <span class="bar"></span>
+        <div class="step"><span class="dot">4</span> Revisão</div>
+      </div>
+
+      <div class="body">
+        <div class="summary">
+          <span class="lbl">Valor total a renegociar</span>
+          <span class="val">R$ 12.450,00</span>
+        </div>
+
+        <div class="field">
+          <label for="qty">Quantidade de parcelas</label>
+          <div class="qty">
+            <button type="button" onclick="changeQty(-1)" aria-label="Diminuir">−</button>
+            <input id="qty" value="1" inputmode="numeric" readonly>
+            <button type="button" onclick="changeQty(1)" aria-label="Aumentar">+</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Parcelas</label>
+          <div class="parcelas" id="parcelas"></div>
+          <div class="hint" id="hint">
+            <span>◆</span>
+            <span>Novo: quando a renegociação resulta em <b>parcela única</b>, a data de vencimento passa a ser editável (padrão D+1). Antes era fixada automaticamente em D+1.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="foot">
+        <button class="btn" type="button">Voltar</button>
+        <button class="btn primary" type="button">Continuar</button>
+      </div>
+    </div>
+
+    <p class="legend">Campos com destaque <b>roxo</b> = comportamento novo do CNT-3010. Mude a quantidade de parcelas para comparar parcela única × múltiplas parcelas.</p>
+  </div>
+
+<script>
+  var TOTAL = 12450.00;
+  var DEFAULT_DATE = "2026-07-02"; // D+1 (exemplo)
+  var qty = 1;
+
+  function fmt(v){
+    return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  }
+  function changeQty(delta){
+    qty = Math.max(1, Math.min(24, qty + delta));
+    document.getElementById('qty').value = qty;
+    render();
+  }
+  function render(){
+    var box = document.getElementById('parcelas');
+    var hint = document.getElementById('hint');
+    box.innerHTML = '';
+    var valor = TOTAL / qty;
+
+    if(qty === 1){
+      hint.style.display = 'flex';
+      box.innerHTML =
+        '<div class="parcela unica">' +
+          '<div>' +
+            '<div class="pnum">Parcela 1 de 1</div>' +
+            '<div class="pval">' + fmt(valor) + '</div>' +
+          '</div>' +
+          '<div class="date-wrap">' +
+            '<span class="badge-new">◆ NOVO — editável</span>' +
+            '<input type="date" value="' + DEFAULT_DATE + '">' +
+            '<small>Padrão sugerido: D+1 · você pode alterar</small>' +
+          '</div>' +
+        '</div>';
+    } else {
+      hint.style.display = 'none';
+      for(var i=1; i<=qty; i++){
+        var d = new Date(2026, 6, 1 + i); // datas de exemplo, uma por mês seria o real
+        var iso = "2026-" + String(7).padStart(2,'0') + "-" + String(1+i).padStart(2,'0');
+        box.innerHTML +=
+          '<div class="parcela">' +
+            '<div>' +
+              '<div class="pnum">Parcela ' + i + ' de ' + qty + '</div>' +
+              '<div class="pval">' + fmt(valor) + '</div>' +
+            '</div>' +
+            '<div class="date-wrap">' +
+              '<small>Data de vencimento</small>' +
+              '<input type="date" value="' + iso + '">' +
+            '</div>' +
+          '</div>';
+      }
+    }
+  }
+  render();
+</script>
+</body>
+</html>
