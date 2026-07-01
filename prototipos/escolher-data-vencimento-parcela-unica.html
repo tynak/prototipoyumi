@@ -3,203 +3,191 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Renegociar parcela — Data de vencimento (CNT-3010)</title>
+<title>Renegociar Parcela — Data de vencimento em parcela única (CNT-3010)</title>
 <style>
   :root{
-    --bg:#f4f5f7; --card:#ffffff; --ink:#0f172a; --muted:#64748b;
-    --line:#e2e8f0; --primary:#0ea5a4; --primary-ink:#0b7f7e;
-    --new:#7c3aed; --new-bg:#f5f0ff; --new-line:#c4b5fd;
-    --soft:#f8fafc;
+    --blue:#2563eb; --blue-dark:#1d4ed8; --blue-border:#bcd0f7; --blue-soft:#eef3ff;
+    --ink:#1f2430; --text:#3b4150; --muted:#8b93a3;
+    --line:#e6e8ec; --field:#f1f3f5; --page:#e9ebef; --step-gray:#9aa2af;
   }
   *{box-sizing:border-box}
   body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    line-height:1.5; padding:32px 16px;
+    margin:0; background:var(--page); color:var(--text);
+    font-family:Roboto,"Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+    padding:28px 14px; line-height:1.45;
   }
-  .wrap{max-width:760px; margin:0 auto}
-  .doc-note{
-    font-size:12px; color:var(--muted); text-align:center; margin:0 0 20px;
+  .stage{max-width:640px; margin:0 auto}
+  .ctx{font-size:12px; color:#5b6472; text-align:center; margin:0 0 8px}
+  .ctx b{color:var(--blue-dark)}
+  .compare{
+    font-size:12.5px; color:#4b5563; background:#fff; border:1px solid var(--line);
+    border-left:3px solid var(--blue); border-radius:8px; padding:10px 14px; margin:0 0 18px;
   }
-  .card{
-    background:var(--card); border:1px solid var(--line); border-radius:16px;
-    box-shadow:0 10px 30px rgba(15,23,42,.06); overflow:hidden;
-  }
-  .head{padding:24px 28px 18px; border-bottom:1px solid var(--line)}
-  .head h1{font-size:20px; margin:0 0 4px}
-  .head p{margin:0; color:var(--muted); font-size:14px}
+  .compare b{color:var(--ink)}
+
+  /* modal */
+  .modal{background:#fff; border:1px solid #dfe2e7; border-radius:12px; box-shadow:0 12px 34px rgba(20,28,45,.12); overflow:hidden}
+  .m-head{display:flex; align-items:center; justify-content:space-between; padding:20px 24px 14px}
+  .m-head h1{font-size:21px; font-weight:700; color:var(--ink); margin:0; letter-spacing:.2px}
+  .m-head .x{color:#9aa2af; font-size:20px; line-height:1; cursor:pointer; background:none; border:0}
 
   /* stepper */
-  .steps{display:flex; gap:8px; padding:18px 28px; border-bottom:1px solid var(--line); flex-wrap:wrap}
-  .step{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted)}
-  .step .dot{
-    width:24px; height:24px; border-radius:50%; display:grid; place-items:center;
-    background:var(--line); color:var(--muted); font-size:12px; font-weight:600;
+  .stepper{display:flex; align-items:flex-start; padding:8px 40px 20px}
+  .step{display:flex; flex-direction:column; align-items:center; flex:0 0 auto; width:86px}
+  .step .circle{
+    width:26px; height:26px; border-radius:50%; display:grid; place-items:center;
+    font-size:12px; font-weight:600; color:#fff; background:var(--step-gray);
   }
-  .step.done .dot{background:var(--primary); color:#fff}
-  .step.active{color:var(--ink); font-weight:600}
-  .step.active .dot{background:var(--ink); color:#fff}
-  .step .bar{width:26px; height:2px; background:var(--line); border-radius:2px}
+  .step.done .circle, .step.active .circle{background:var(--blue)}
+  .step .lbl{margin-top:8px; font-size:11px; font-weight:600; letter-spacing:.4px; color:var(--muted); text-transform:uppercase}
+  .step.done .lbl, .step.active .lbl{color:var(--ink)}
+  .connector{flex:1 1 auto; height:2px; background:var(--line); margin-top:12px}
 
-  .body{padding:24px 28px}
-  .summary{
-    display:flex; justify-content:space-between; align-items:center;
-    background:var(--soft); border:1px solid var(--line); border-radius:12px;
-    padding:14px 16px; margin-bottom:22px;
-  }
-  .summary .lbl{font-size:13px; color:var(--muted)}
-  .summary .val{font-size:18px; font-weight:700}
+  .m-body{padding:4px 24px 8px}
+  .rule{height:1px; background:var(--line); margin:18px 0}
+  .section-label{font-size:13.5px; font-weight:700; color:var(--ink); margin:0 0 12px}
 
-  .field{margin-bottom:20px}
-  .field > label{display:block; font-size:13px; font-weight:600; margin-bottom:8px}
-
-  .qty{display:inline-flex; align-items:center; border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  /* quantidade */
+  .qty{display:flex; align-items:center; gap:12px}
   .qty button{
-    width:40px; height:40px; border:0; background:var(--soft); font-size:18px; cursor:pointer; color:var(--ink);
+    width:46px; height:40px; border:1.5px solid var(--blue-border); border-radius:8px;
+    background:#fff; color:var(--blue); font-size:20px; cursor:pointer; display:grid; place-items:center;
   }
-  .qty button:hover{background:#eef2f6}
-  .qty input{width:56px; height:40px; border:0; text-align:center; font-size:16px; font-weight:600; background:#fff}
-  .qty input:focus{outline:none}
+  .qty button:hover{background:var(--blue-soft)}
+  .qty .box{width:96px; height:40px; background:var(--field); border:1px solid var(--line); border-radius:6px;
+    display:flex; align-items:center; padding:0 12px; font-size:15px; color:var(--ink); font-weight:500}
 
+  /* radios */
+  .radios{display:flex; gap:26px; align-items:center}
+  .radio{display:flex; align-items:center; gap:8px; font-size:14px; color:var(--text)}
+  .radio .dot{width:18px; height:18px; border-radius:50%; border:2px solid #c3c9d4; display:grid; place-items:center}
+  .radio.on .dot{border-color:var(--blue)}
+  .radio.on .dot::after{content:""; width:9px; height:9px; border-radius:50%; background:var(--blue)}
+
+  /* linhas de parcela */
   .parcelas{display:flex; flex-direction:column; gap:12px}
-  .parcela{
-    border:1px solid var(--line); border-radius:12px; padding:14px 16px;
-    display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;
+  .prow{display:flex; align-items:stretch; gap:14px}
+  .prow .idx{align-self:center; font-size:13px; font-weight:700; color:var(--muted); width:22px; flex:0 0 auto}
+  .valor{
+    flex:1 1 auto; background:var(--field); border:1px solid var(--line); border-radius:6px;
+    padding:8px 14px; display:flex; flex-direction:column; justify-content:center; min-height:56px;
   }
-  .parcela .pnum{font-size:13px; color:var(--muted)}
-  .parcela .pval{font-weight:600}
-  .date-wrap{display:flex; flex-direction:column; gap:6px; min-width:180px}
-  .date-wrap small{font-size:11px; color:var(--muted)}
-  input[type=date]{
-    height:40px; border:1px solid var(--line); border-radius:10px; padding:0 12px; font-size:14px;
-    font-family:inherit; color:var(--ink);
+  .valor .fl{font-size:11px; color:var(--muted)}
+  .valor .vl{font-size:15px; color:#9298a6}
+  .data{flex:0 0 176px; display:flex; flex-direction:column; gap:5px}
+  .data > span{font-size:11px; color:var(--muted)}
+  .data input[type=date]{
+    height:40px; border:1px solid var(--line); border-radius:6px; padding:0 10px; font-size:14px;
+    color:var(--ink); font-family:inherit; background:#fff; width:100%;
   }
-  input[type=date]:focus{outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(14,165,164,.15)}
+  .data input[type=date]:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+  /* destaque discreto do campo que passa a existir na proposta */
+  .prow.nova .data input[type=date]{border-color:var(--blue); background:var(--blue-soft)}
+  .tag-nova{display:inline-flex; align-items:center; gap:5px; margin-left:8px; font-size:10px; font-weight:700;
+    color:var(--blue-dark); background:var(--blue-soft); border:1px solid var(--blue-border); padding:1px 7px; border-radius:999px}
 
-  /* destaque do campo novo (parcela única) */
-  .parcela.unica{background:var(--new-bg); border-color:var(--new-line)}
-  .parcela.unica input[type=date]{border-color:var(--new-line)}
-  .badge-new{
-    display:inline-flex; align-items:center; gap:6px; background:var(--new); color:#fff;
-    font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; letter-spacing:.02em;
-  }
-  .hint{font-size:12px; color:var(--new); margin-top:10px; display:flex; gap:6px; align-items:flex-start}
+  /* banner restante */
+  .restante{display:flex; justify-content:space-between; align-items:center; background:var(--blue-soft);
+    border-radius:6px; padding:12px 16px; margin-top:16px; font-size:13.5px; color:var(--text)}
+  .restante b{color:var(--ink); font-size:15px}
 
-  .foot{
-    display:flex; justify-content:space-between; gap:12px; padding:18px 28px;
-    border-top:1px solid var(--line); background:var(--soft);
-  }
-  .btn{height:42px; padding:0 20px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; border:1px solid var(--line); background:#fff; color:var(--ink)}
-  .btn.primary{background:var(--primary); border-color:var(--primary); color:#fff}
-  .btn.primary:hover{background:var(--primary-ink)}
-  .legend{margin-top:18px; font-size:12px; color:var(--muted); text-align:center}
-  .legend b{color:var(--new)}
+  /* rodape */
+  .m-foot{display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-top:1px solid var(--line); background:#fcfcfd; margin-top:12px}
+  .link-btn{background:none; border:0; color:var(--blue); font-size:13px; font-weight:700; letter-spacing:.4px; cursor:pointer; text-transform:uppercase}
+  .primary{background:var(--blue); border:0; color:#fff; height:42px; padding:0 22px; border-radius:8px; font-size:13px; font-weight:700; letter-spacing:.4px; cursor:pointer; text-transform:uppercase}
+  .primary:hover{background:var(--blue-dark)}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <p class="doc-note">Protótipo para refinamento · CNT-3010 — Escolher data de vencimento para renegociação de parcela única · Squad Pagadoria</p>
+  <div class="stage">
+    <p class="ctx">Protótipo p/ refinamento · <b>CNT-3010</b> — Escolher data de vencimento para renegociação de parcela única · Squad Pagadoria</p>
+    <div class="compare" id="compare"></div>
 
-    <div class="card">
-      <div class="head">
-        <h1>Renegociar parcela</h1>
-        <p>Cliente: Maria Oliveira · Contrato #48213 · Empreendimento Jardim das Acácias</p>
+    <div class="modal">
+      <div class="m-head">
+        <h1>Renegociar Parcela</h1>
+        <button class="x" aria-label="Fechar">✕</button>
       </div>
 
-      <div class="steps">
-        <div class="step done"><span class="dot">✓</span> Dados</div>
-        <span class="bar"></span>
-        <div class="step active"><span class="dot">2</span> Parcelas</div>
-        <span class="bar"></span>
-        <div class="step"><span class="dot">3</span> Rateio</div>
-        <span class="bar"></span>
-        <div class="step"><span class="dot">4</span> Revisão</div>
+      <div class="stepper">
+        <div class="step done"><span class="circle">✓</span><span class="lbl">Seleção</span></div>
+        <span class="connector"></span>
+        <div class="step active"><span class="circle">2</span><span class="lbl">Parcelas</span></div>
+        <span class="connector"></span>
+        <div class="step"><span class="circle">3</span><span class="lbl">Rateio</span></div>
+        <span class="connector"></span>
+        <div class="step"><span class="circle">4</span><span class="lbl">Revisão</span></div>
       </div>
 
-      <div class="body">
-        <div class="summary">
-          <span class="lbl">Valor total a renegociar</span>
-          <span class="val">R$ 12.450,00</span>
+      <div class="m-body">
+        <div class="section-label">Quantidade de parcelas</div>
+        <div class="qty">
+          <button type="button" onclick="changeQty(-1)" aria-label="Diminuir">−</button>
+          <div class="box" id="qtyVal">1</div>
+          <button type="button" onclick="changeQty(1)" aria-label="Aumentar">+</button>
         </div>
 
-        <div class="field">
-          <label for="qty">Quantidade de parcelas</label>
-          <div class="qty">
-            <button type="button" onclick="changeQty(-1)" aria-label="Diminuir">−</button>
-            <input id="qty" value="1" inputmode="numeric" readonly>
-            <button type="button" onclick="changeQty(1)" aria-label="Aumentar">+</button>
+        <div class="rule"></div>
+
+        <div id="mesmoValor">
+          <div class="section-label">As parcelas terão o mesmo valor?</div>
+          <div class="radios">
+            <div class="radio on"><span class="dot"></span> Sim</div>
+            <div class="radio"><span class="dot"></span> Não</div>
           </div>
+          <div style="height:6px"></div>
         </div>
 
-        <div class="field">
-          <label>Parcelas</label>
-          <div class="parcelas" id="parcelas"></div>
-          <div class="hint" id="hint">
-            <span>◆</span>
-            <span>Novo: quando a renegociação resulta em <b>parcela única</b>, a data de vencimento passa a ser editável (padrão D+1). Antes era fixada automaticamente em D+1.</span>
-          </div>
+        <div class="section-label" id="defLabel">Definição de valores e vencimentos</div>
+        <div class="parcelas" id="parcelas"></div>
+
+        <div class="restante">
+          <span>Valor restante a ser dividido entre as parcelas:</span>
+          <b>R$ 0,00</b>
         </div>
       </div>
 
-      <div class="foot">
-        <button class="btn" type="button">Voltar</button>
-        <button class="btn primary" type="button">Continuar</button>
+      <div class="m-foot">
+        <button class="link-btn">‹ Voltar</button>
+        <button class="primary">Seguir ›</button>
       </div>
     </div>
-
-    <p class="legend">Campos com destaque <b>roxo</b> = comportamento novo do CNT-3010. Mude a quantidade de parcelas para comparar parcela única × múltiplas parcelas.</p>
   </div>
 
 <script>
-  var TOTAL = 12450.00;
-  var DEFAULT_DATE = "2026-07-02"; // D+1 (exemplo)
+  var TOTAL = 100.00;
   var qty = 1;
-
-  function fmt(v){
-    return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  function fmt(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+  function isoDate(i){ // parcela i (1-based): mês 7,8,9... dia 02, ano 2026
+    var m = 7 + (i-1); var y = 2026 + Math.floor((m-1)/12); m = ((m-1)%12)+1;
+    return y + "-" + String(m).padStart(2,'0') + "-02";
   }
-  function changeQty(delta){
-    qty = Math.max(1, Math.min(24, qty + delta));
-    document.getElementById('qty').value = qty;
-    render();
-  }
+  function changeQty(d){ qty = Math.max(1, Math.min(12, qty+d)); render(); }
   function render(){
-    var box = document.getElementById('parcelas');
-    var hint = document.getElementById('hint');
-    box.innerHTML = '';
-    var valor = TOTAL / qty;
+    document.getElementById('qtyVal').textContent = qty;
+    var unica = (qty === 1);
+    // com 1 parcela não faz sentido "mesmo valor?"
+    document.getElementById('mesmoValor').style.display = unica ? 'none' : 'block';
 
-    if(qty === 1){
-      hint.style.display = 'flex';
-      box.innerHTML =
-        '<div class="parcela unica">' +
-          '<div>' +
-            '<div class="pnum">Parcela 1 de 1</div>' +
-            '<div class="pval">' + fmt(valor) + '</div>' +
-          '</div>' +
-          '<div class="date-wrap">' +
-            '<span class="badge-new">◆ NOVO — editável</span>' +
-            '<input type="date" value="' + DEFAULT_DATE + '">' +
-            '<small>Padrão sugerido: D+1 · você pode alterar</small>' +
-          '</div>' +
+    var box = document.getElementById('parcelas'); box.innerHTML = '';
+    var val = TOTAL / qty;
+    for(var i=1;i<=qty;i++){
+      var novaCls = unica ? ' nova' : '';
+      var tag = unica ? '<span class="tag-nova">◆ NOVO — editável</span>' : '';
+      box.innerHTML +=
+        '<div class="prow'+novaCls+'">' +
+          '<span class="idx">#'+i+'</span>' +
+          '<div class="valor"><span class="fl">Valor da parcela</span><span class="vl">'+fmt(val)+'</span></div>' +
+          '<div class="data"><span>Data de vencimento'+tag+'</span>' +
+            '<input type="date" value="'+isoDate(i)+'"></div>' +
         '</div>';
+    }
+
+    var cmp = document.getElementById('compare');
+    if(unica){
+      cmp.innerHTML = '<b>Parcela única (proposta CNT-3010):</b> hoje, com 1 parcela, esta seção não aparece e o vencimento é fixado em D+1 automaticamente. A proposta traz o campo <b>“Data de vencimento” editável</b>, com paridade ao fluxo de múltiplas parcelas. Use o + / − para comparar.';
     } else {
-      hint.style.display = 'none';
-      for(var i=1; i<=qty; i++){
-        var d = new Date(2026, 6, 1 + i); // datas de exemplo, uma por mês seria o real
-        var iso = "2026-" + String(7).padStart(2,'0') + "-" + String(1+i).padStart(2,'0');
-        box.innerHTML +=
-          '<div class="parcela">' +
-            '<div>' +
-              '<div class="pnum">Parcela ' + i + ' de ' + qty + '</div>' +
-              '<div class="pval">' + fmt(valor) + '</div>' +
-            '</div>' +
-            '<div class="date-wrap">' +
-              '<small>Data de vencimento</small>' +
-              '<input type="date" value="' + iso + '">' +
-            '</div>' +
-          '</div>';
-      }
+      cmp.innerHTML = '<b>Múltiplas parcelas (já existe hoje):</b> cada parcela já tem sua data de vencimento editável. O objetivo do CNT-3010 é ter o mesmo comportamento quando a quantidade é 1.';
     }
   }
   render();
